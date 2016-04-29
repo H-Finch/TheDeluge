@@ -1,0 +1,23 @@
+source("http://bioconductor.org/biocLite.R")
+biocLite("graph")
+biocLite("Rgraphviz")
+install.packages("qdap")
+rm(Corpus)
+rm(myCorpus)
+
+tm_map(abs, removeWords, c(stopwords("english"),"my","custom","words")) 
+myCorpus = tm_map(myCorpus, removeNumbers)
+myCorpus = tm_map(myCorpus, removePunctuation)
+myCorpus = tm_map(myCorpus , stripWhitespace)
+myCorpus = tm_map(myCorpus, tolower)
+myCorpus = tm_map(myCorpus, removeWords, stopwords("english")) 
+myTDM=TermDocumentMatrix(myCorpus)
+strip(myCorpus,char.keep="#")
+stopwords("en")
+
+fn <- tempfile()
+dataframe<-data.frame(text=unlist(sapply(myCorpus, `[`, "content")), 
+                      stringsAsFactors=F)
+writeLines(dataframe,fn)
+result=aspell(dataframe)
+rm(dataframe)
