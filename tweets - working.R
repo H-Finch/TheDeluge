@@ -21,3 +21,4 @@ dataframe<-data.frame(text=unlist(sapply(myCorpus, `[`, "content")),
 writeLines(dataframe,fn)
 result=aspell(dataframe)
 rm(dataframe)
+writeLines(as.character(myCorpus), con="myCorpus.txt")
