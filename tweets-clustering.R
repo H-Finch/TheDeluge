@@ -75,6 +75,8 @@ myCorpus = tm_map(myCorpus, stemDocument)
 # inspect the first 5 documents (tweets)
 # inspect(myCorpus[1:5])
 # The code below is used for to make text fit for paper width
+
+myCorpus=tm_map(myCorpus, PlainTextDocument)
 for (i in c(1:5, 320)) {
 cat(paste0("[", i, "] "))
 writeLines(strwrap(as.character(myCorpus[[i]]), 60))
@@ -158,6 +160,8 @@ cat(names(s)[1:5], "nn")
 
 dtm = as.DocumentTermMatrix(tdm)
 library(topicmodels)
+rowTotals = apply(dtm , 1, sum) #Find the sum of words in each Document
+dtm  = dtm[rowTotals> 0, ]           #remove all docs without words
 lda = LDA(dtm, k = 4) # find 8 topics
 (term = terms(lda, 6)) # first 6 terms of every topic
 term = apply(term, MARGIN = 2, paste, collapse = ", ")
