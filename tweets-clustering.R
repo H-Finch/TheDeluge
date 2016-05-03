@@ -5,6 +5,8 @@ library(plotly)
 library(tm)
 library(RWeka)
 library(qdap)
+library(lubridate)
+library(useful)
 dat=read.csv("final - tweets.txt",header=TRUE,sep="\t",nrows=500)
 nrow(dat)
 head(dat)
@@ -151,6 +153,8 @@ set.seed(122) # set a fixed random seed
 k = 6 # number of clusters
 kmeansResult = kmeans(m3, k)
 round(kmeansResult$centers, digits = 3) # cluster centers
+#clusplot(m3, kmeansResult$cluster, color=T, shade=T, labels=2, lines=0)
+plot(kmeansResult,m3)
 
 for (i in 1:k) {
 cat(paste("cluster ", i, ": ", sep = ""))
