@@ -168,7 +168,6 @@ term = apply(term, MARGIN = 2, paste, collapse = ", ")
 
 # first topic identified for every document (tweet)
 topic = topics(lda, 1)
-topics = data.frame(date=as.IDate(tweets.df$created), topic)
-qplot(date, ..count.., data=topics, geom="density",
-      fill=term[topic], position="stack")
+topics = data.frame(date=dmy_hms(paste(dg1$date, dg1$time), topic))
+qplot(date, ..count.., data=topics, geom="density",fill=term[topic], position="stack")
 
