@@ -1,5 +1,7 @@
 getwd()
 library(stringr)
+library(lubridate)
+library(plotly)
 library(tm)
 library(RWeka)
 library(qdap)
