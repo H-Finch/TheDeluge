@@ -1,16 +1,16 @@
 #####LATENT DIRICHLET ALLOCATION#####
-text=dat$text
-text = function(x) gsub("'", "", x)  # remove apostrophes
-text = function(x) gsub("[[:punct:]]", " ", x)  # replace punctuation with space
-text = function(x) gsub("[[:cntrl:]]", " ", x)  # replace control characters with space
-text = function(x) gsub("^[[:space:]]+", "", x) # remove whitespace at beginning of documents
-text = function(x) gsub("[[:space:]]+$", "", x) # remove whitespace at end of documents
-text = function(x) gsub("http\\w+", "", x)
-text = function(x) gsub("pic\\w+", "", x)
-text = function(x) gsub("twitter\\w+", "", x)
-text = function(x) gsub("#(\\d|\\w)+", "", x)
-text = function(x) gsub("@\\w+", "", x)
-text = function(x) tolower(x) # force to lowercase
+# text=dat$text
+# text = function(x) gsub("'", "", x)  # remove apostrophes
+# text = function(x) gsub("[[:punct:]]", " ", x)  # replace punctuation with space
+# text = function(x) gsub("[[:cntrl:]]", " ", x)  # replace control characters with space
+# text = function(x) gsub("^[[:space:]]+", "", x) # remove whitespace at beginning of documents
+# text = function(x) gsub("[[:space:]]+$", "", x) # remove whitespace at end of documents
+# text = function(x) gsub("http\\w+", "", x)
+# text = function(x) gsub("pic\\w+", "", x)
+# text = function(x) gsub("twitter\\w+", "", x)
+# text = function(x) gsub("#(\\d|\\w)+", "", x)
+# text = function(x) gsub("@\\w+", "", x)
+# text = function(x) tolower(x) # force to lowercase
 tdm=removeSparseTerms(tdm,0.99)
 dim(tdm)
 tdm = tdm[rowSums(as.matrix(tdm))>0,]
@@ -55,29 +55,32 @@ ggplot(data=termimportance.longform,
          color=factor(topic),
          group=topic)) + 
   geom_line()
-###2: Individual comics' distribution over topics ###
-comics.topics = posterior(lda.model,dtm[trainpoints,])$topics
-df.comics.topics = as.data.frame(comics.topics)
-df.comics.topics = cbind(comic=as.character(rownames(df.comics.topics)),
-                          df.comics.topics, stringsAsFactors=F)
+###2: Individual tweets' distribution over topics ###
+tweets.topics = posterior(lda.model,dtm[trainpoints,])$topics
+df.tweets.topics = as.data.frame(tweets.topics)
+df.tweets.topics = cbind(tweet=as.character(rownames(df.tweets.topics)),
+                          df.tweets.topics, stringsAsFactors=F)
 
-df.comics.topics.longform = melt(df.comics.topics,
-                                  id.vars="comic",variable.name="topic")
-df.comics.topics.longform = df.comics.topics.longform[order(as.numeric(df.comics.topics.longform$comic)),]
+df.tweets.topics.longform = melt(df.tweets.topics,
+                                  id.vars="tweet",variable.name="topic")
+df.tweets.topics.longform = df.tweets.topics.longform[order(as.numeric(df.tweets.topics.longform$tweet)),]
 
 topic.names = terms(lda.model,6)
 topic.names = apply(topic.names, 2, paste, collapse=",")
+topic.names
 names(topic.names) = NULL
 
-n.comics.to.plot = 6000
-start.comic = 1
+n.tweets.to.plot = 30
+start.tweet = 5000
 
 four.colour.palette = brewer.pal(10,"Paired")[c(1,3,5,7)]
 
-bplot = ggplot(df.comics.topics.longform[(start.comic*k)+1:(n.comics.to.plot*k),],
-                aes(x=comic,y=value)) + 
-  geom_bar(stat="identity",position="stack",aes(fill=topic))
-
+bplot = ggplot(df.tweets.topics.longform[(start.tweet*k)+1:(n.tweets.to.plot*k),],
+                aes(x=tweet,y=value)) + 
+  
+  geom_bar(stat="identity",position="stack",aes(fill=topic))+
+  coord_flip()
+bplot
 bplot + 
   scale_fill_manual(values=four.colour.palette,
                     name="Topic", breaks=1:k,labels=topic.names) +
